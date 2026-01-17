@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 import css from "./SignInPage.module.css";
 import axios from "axios";
 
@@ -13,6 +14,7 @@ interface ApiErrorResponse {
 export default function SignInPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleAction = async (formData: FormData) => {
     const email = formData.get("email") as string;
@@ -20,7 +22,8 @@ export default function SignInPage() {
 
     try {
       setError(null);
-      await login({ email, password });
+      const user = await login({ email, password });
+      setUser(user);
       router.push("/profile");
     } catch (err: unknown) {
       if (axios.isAxiosError<ApiErrorResponse>(err)) {

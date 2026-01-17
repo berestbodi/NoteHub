@@ -37,8 +37,11 @@ export const getMe = async () => {
   return res.data;
 };
 
-export const checkSession = async () => {
-  const authHeaders = await getAuthHeaders();
-  const res = await api.get<string>("/auth/session", authHeaders);
-  return res.data;
+export const checkSession = async (externalCookie?: string) => {
+  const cookieString = externalCookie || (await headers()).get("cookie") || "";
+
+  const res = await api.get<string>("/auth/session", {
+    headers: { cookie: cookieString },
+  });
+  return res;
 };

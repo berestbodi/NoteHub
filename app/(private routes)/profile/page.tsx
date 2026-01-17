@@ -1,25 +1,17 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { getMe } from "@/lib/api/serverApi";
 import css from "./ProfilePage.module.css";
 
 export const metadata: Metadata = {
   title: "Profile | NoteHub",
   description: "View and manage your NoteHub user profile information.",
-  openGraph: {
-    title: "User Profile | NoteHub",
-    description: "Manage your account settings and profile information.",
-    url: "https://notehub-app.vercel.app/profile",
-    images: [
-      {
-        url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-        alt: "NoteHub Profile",
-      },
-    ],
-  },
 };
 
 export default async function ProfilePage() {
+  const user = await getMe();
+
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
@@ -32,8 +24,11 @@ export default async function ProfilePage() {
 
         <div className={css.avatarWrapper}>
           <Image
-            src={"https://ac.goit.global/fullstack/react/default-avatar.jpg"}
-            alt={` avatar`}
+            src={
+              user.avatar ||
+              "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+            }
+            alt={`${user.username}'s avatar`}
             width={120}
             height={120}
             className={css.avatar}
@@ -42,8 +37,8 @@ export default async function ProfilePage() {
         </div>
 
         <div className={css.profileInfo}>
-          <p>Username: </p>
-          <p>Email: </p>
+          <p>Username: {user.username}</p>
+          <p>Email: {user.email}</p>
         </div>
       </div>
     </main>
