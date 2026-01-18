@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { checkSession } from "./lib/api/serverApi";
 
 const privateRoutes = ["/profile", "/notes"];
 const authRoutes = ["/sign-in", "/sign-up"];
@@ -13,24 +14,21 @@ export async function proxy(request: NextRequest) {
 
   let isAuthenticated = !!accessToken;
   let justRefreshed = false;
-  let newCookieHeader: string | null = null;
+  let newCookies: string[] = [];
 
   if (!isAuthenticated && refreshToken) {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`,
-        {
-          method: "GET",
-          headers: {
-            Cookie: `refreshToken=${refreshToken}`,
-          },
-        },
-      );
+      const response = await checkSession(`refreshToken=${refreshToken}`);
 
-      if (response.ok) {
+      if (response.status === 200) {
         isAuthenticated = true;
         justRefreshed = true;
-        newCookieHeader = response.headers.get("set-cookie");
+        const setCookieHeader = response.headers["set-cookie"];
+        if (setCookieHeader) {
+          newCookies = Array.isArray(setCookieHeader)
+            ? setCookieHeader
+            : [setCookieHeader];
+        }
       }
     } catch (error) {
       console.error("Session refresh failed in proxy:", error);
@@ -46,12 +44,13 @@ export async function proxy(request: NextRequest) {
 
   if (justRefreshed) {
     const targetUrl = isAuthRoute ? new URL("/", request.url) : request.url;
-    const response = NextResponse.redirect(targetUrl);
+    const redirectResponse = NextResponse.redirect(targetUrl);
 
-    if (newCookieHeader) {
-      response.headers.set("set-cookie", newCookieHeader);
-    }
-    return response;
+    newCookies.forEach((cookie) => {
+      redirectResponse.headers.append("set-cookie", cookie);
+    });
+
+    return redirectResponse;
   }
 
   if (isPrivateRoute && !isAuthenticated) {
