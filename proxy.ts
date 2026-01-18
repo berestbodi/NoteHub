@@ -12,7 +12,8 @@ export async function proxy(request: NextRequest) {
   const refreshToken = cookieStore.get("refreshToken")?.value;
 
   let isAuthenticated = !!accessToken;
-  let responseWithCookies: NextResponse | null = null;
+  let justRefreshed = false;
+  let newCookieHeader: string | null = null;
 
   if (!isAuthenticated && refreshToken) {
     try {
@@ -28,11 +29,8 @@ export async function proxy(request: NextRequest) {
 
       if (response.ok) {
         isAuthenticated = true;
-        responseWithCookies = NextResponse.next();
-        const setCookie = response.headers.get("set-cookie");
-        if (setCookie) {
-          responseWithCookies.headers.set("set-cookie", setCookie);
-        }
+        justRefreshed = true;
+        newCookieHeader = response.headers.get("set-cookie");
       }
     } catch (error) {
       console.error("Session refresh failed in proxy:", error);
@@ -46,20 +44,25 @@ export async function proxy(request: NextRequest) {
     nextUrl.pathname.startsWith(route),
   );
 
+  if (justRefreshed) {
+    const targetUrl = isAuthRoute ? new URL("/", request.url) : request.url;
+    const response = NextResponse.redirect(targetUrl);
+
+    if (newCookieHeader) {
+      response.headers.set("set-cookie", newCookieHeader);
+    }
+    return response;
+  }
+
   if (isPrivateRoute && !isAuthenticated) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
   if (isAuthRoute && isAuthenticated) {
-    const redirectResponse = NextResponse.redirect(new URL("/", request.url));
-    if (responseWithCookies) {
-      const setCookie = responseWithCookies.headers.get("set-cookie");
-      if (setCookie) redirectResponse.headers.set("set-cookie", setCookie);
-    }
-    return redirectResponse;
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  return responseWithCookies || NextResponse.next();
+  return NextResponse.next();
 }
 
 export const config = {
