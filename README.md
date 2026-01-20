@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Here is a matching, stylized **README.md** for your **NoteHub** project. Since this project is more advanced (featuring Next.js 16 and Authentication), I've highlighted the security and server-side features.
 
-## Getting Started
+---
 
-First, run the development server:
+# 📝 NoteHub
 
+### *Secure, smart, and seamless note management*
+
+**NoteHub** is a high-performance personal note-taking application. It goes beyond simple CRUD by implementing professional-grade authentication, server-side route protection, and optimized data management.
+
+---
+
+### 🚀 Tech Stack
+
+This project showcases the cutting edge of the Next.js ecosystem:
+
+| Category | Tools & Technologies |
+| --- | --- |
+| **Framework** | **Next.js 16 (App Router)** 🚀, **React 19** ⚛️ |
+| **Authentication** | **JWT**, **Middleware (Edge Runtime)** 🛡️ |
+| **State & Data** | **Zustand** 🐻, **TanStack Query (v5)** 🔄 |
+| **Forms** | **React 19 Form Actions**, **Formik** 📝 |
+| **API** | **Axios** 📡 |
+
+---
+
+### ✨ Technical Highlights
+
+#### 🔒 Advanced Security & Auth
+
+* **Edge Middleware:** Implemented server-level route protection to keep private notes secure.
+* **Auto-Refresh Logic:** Integrated a smart **JWT Refresh Token** system within the middleware to ensure sessions stay active without interrupting the user.
+* **Cookie Management:** Secure, server-side handling of access and refresh tokens.
+
+#### ⚡ Performance & Optimization
+
+* **React 19 Form Actions:** Leveraged the newest React features for faster, more efficient note creation and updates.
+* **Server-State Management:** Used **TanStack Query** for instant caching, background fetching, and smooth server-side pagination.
+* **Global State:** **Zustand** provides a lightweight and lightning-fast global store for user data.
+
+#### 🔍 User Experience (UX)
+
+* **Real-time Search:** Integrated **debounced search** to filter through notes instantly without overloading the API.
+* **Tag Filtering:** Easily organize and find notes by category.
+* **Responsive Design:** Fully optimized with **CSS Modules** for a clean, mobile-friendly interface.
+
+---
+
+### 🛠 Installation
+
+1. **Clone the repo:**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/berestbodi/NoteHub.git
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Install dependencies:**
+```bash
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+3. **Set up Environment Variables:**
+Create a `.env.local` file and add your API URL:
+```env
+NEXT_PUBLIC_API_URL=your_api_endpoint
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+4. **Launch the app:**
+```bash
+npm run dev
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+> Check out the live demo here: [09-auth-rho-ten.vercel.app](https://09-auth-rho-ten.vercel.app/) 🌍
+
+---
